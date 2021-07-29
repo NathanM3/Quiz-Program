@@ -1,3 +1,6 @@
+# First version of Main Menu GUI shows everything up to the first two buttons
+# I was still working out how to place the buttons where I wanted
+# I used a button frame to do this in the second version
 from tkinter import *
 import random
 
