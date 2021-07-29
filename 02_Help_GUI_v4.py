@@ -1,9 +1,9 @@
-# Based on 02_Help_GUI_v1.py
-# This is the second version of the Help GUI which uses the Help class
-# To produce the new GUI.
+# Based on 02_Help_GUI_v3, now the help button is enabled when the help window
+# is closed.
 from tkinter import *
 import random
 from tkinter.ttk import Separator
+from functools import partial  # to eliminate duplicate windows
 
 
 class Menu:
@@ -73,16 +73,25 @@ class Menu:
 
     def help(self):
         print("You asked for help")
-        get_help = Help()
+        get_help = Help(self)
         get_help.help_text.configure(text="Help text goes here")
 
 
 class Help:
-    def __init__(self):
-        background = "orange"
+    def __init__(self, partner):
+        background = "dark orange"
+
+        # to disable help button
+        partner.help_button.config(state=DISABLED)
 
         # sets up child window (ie: help box)
         self.help_box = Toplevel()
+
+        # If a user presses the red cross at the top, it will use close_help
+        # This enables the help button.
+        self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help,
+                                                           partner))
+
         # set up GUI Frame
         self.help_frame = Frame(self.help_box, width=300, bg=background)
         self.help_frame.grid()
@@ -97,12 +106,15 @@ class Help:
         self.help_text.grid(row=1)
         # Dismiss button (row 2)
         self.dismiss_btn = Button(self.help_frame, text="Dismiss",
-                                  width=10, bg="orange", font="arial 10 bold",
-                                  command=self.close_help)
+                                  width=10, bg="slate gray", font="arial 10 bold",
+                                  command=partial(self.close_help, partner),
+                                  fg="white")
 
         self.dismiss_btn.grid(row=2, pady=10)
 
-    def close_help(self):
+    def close_help(self, partner):
+        # Enabling the help button again in the close help function
+        partner.help_button.config(state=NORMAL)
         self.help_box.destroy()
 
 

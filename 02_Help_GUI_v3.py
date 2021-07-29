@@ -1,9 +1,9 @@
-# Based on 02_Help_GUI_v1.py
-# This is the second version of the Help GUI which uses the Help class
-# To produce the new GUI.
+# Based on 02_Help_GUI_v2 but now it disables the 'Help' button using
+# functools partial which can configure the help button state from Help()
 from tkinter import *
 import random
 from tkinter.ttk import Separator
+from functools import partial  # to eliminate duplicate windows
 
 
 class Menu:
@@ -73,13 +73,16 @@ class Menu:
 
     def help(self):
         print("You asked for help")
-        get_help = Help()
+        get_help = Help(self)
         get_help.help_text.configure(text="Help text goes here")
 
 
 class Help:
-    def __init__(self):
-        background = "orange"
+    def __init__(self, partner):
+        background = "dark orange"
+
+        # to disable help button
+        partner.help_button.config(state=DISABLED)
 
         # sets up child window (ie: help box)
         self.help_box = Toplevel()
@@ -97,8 +100,8 @@ class Help:
         self.help_text.grid(row=1)
         # Dismiss button (row 2)
         self.dismiss_btn = Button(self.help_frame, text="Dismiss",
-                                  width=10, bg="orange", font="arial 10 bold",
-                                  command=self.close_help)
+                                  width=10, bg="slate gray", font="arial 10 bold",
+                                  command=self.close_help, fg="white")
 
         self.dismiss_btn.grid(row=2, pady=10)
 
