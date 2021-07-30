@@ -74,7 +74,6 @@ class Menu:
     def help(self):
         print("You asked for help")
         get_help = Help(self)
-        get_help.help_text.configure(text="Help text goes here")
 
 
 class Help:
@@ -93,15 +92,24 @@ class Help:
                                                            partner))
 
         # set up GUI Frame
-        self.help_frame = Frame(self.help_box, width=300, bg=background)
+        self.help_frame = Frame(self.help_box, width=450, bg=background)
         self.help_frame.grid()
         # set up Help heading (row 0)
-        self.how_heading = Label(self.help_frame, text="Help/Instructions",
+        self.how_heading = Label(self.help_frame, text="Help / Information",
                                  font="Arial 10 bold",
                                  bg=background, pady=10)
         self.how_heading.grid(row=0)
         # Help text (label, row 1)
-        self.help_text = Label(self.help_frame, text="", justify=LEFT,
+        self.help_text = Label(self.help_frame,
+                               text="This is a Geographical Quiz that will "
+                                    "show you the name of a country or "
+                                    "capital and ask you to enter the "
+                                    "corresponding capital or country.\nAfter "
+                                    "you have completed the quiz or decided "
+                                    "to stop playing, a record of answers can "
+                                    "be exported by pressing the 'Answer "
+                                    "Record History' button and following the "
+                                    "instructions given.\nEnjoy", justify=LEFT,
                                width=40, bg=background, wrap=250)
         self.help_text.grid(row=1)
         # Dismiss button (row 2)
@@ -110,7 +118,7 @@ class Help:
                                   command=partial(self.close_help, partner),
                                   fg="white")
 
-        self.dismiss_btn.grid(row=2, pady=10)
+        self.dismiss_btn.grid(row=2, pady=5)
 
     def close_help(self, partner):
         # Enabling the help button again in the close help function

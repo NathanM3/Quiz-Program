@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd218f65-83bf-4104-b03c-4f70c7faa0ca" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/02_Help_GUI_v3.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_Help_GUI_v4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_Help_GUI_v2.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_Help_GUI_v2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_Help_GUI_v4.py" beforeDir="false" afterPath="$PROJECT_DIR$/02_Help_GUI_v4.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +33,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.02_Help_GUI_v4">
-    <configuration name="00_all_colours_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="01_Main_Menu_v3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Quiz-Program" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -47,7 +45,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/00_all_colours_v2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/01_Main_Menu_v3.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -164,10 +162,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.02_Help_GUI_v4" />
-        <item itemvalue="Python.02_Help_GUI_v1" />
         <item itemvalue="Python.02_Help_GUI_v2" />
         <item itemvalue="Python.02_Help_GUI_v3" />
-        <item itemvalue="Python.00_all_colours_v2" />
+        <item itemvalue="Python.01_Main_Menu_v3" />
+        <item itemvalue="Python.02_Help_GUI_v1" />
       </list>
     </recent_temporary>
   </component>
