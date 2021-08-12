@@ -1,5 +1,10 @@
 """Deleted unnecessary print statements that were used for testing in the
 previous version (04_Get_Name_v1.py)
+Edited the name checking function to register blanks (lines 110 and 111)
+Removed one elif statement that was not required (previously lines 112,113).
+Added if statements to countries and capitals classes line (126-132) which
+means that the classes will only open if a valid name has been entered
+04_Get_Name_v2.py
 """
 # importing modules to use within program
 # tkinter module used to create GUIs
@@ -102,10 +107,8 @@ class Menu:
                         self.get_name_label.configure(
                             text="no {}'s allowed".format(letter), fg="red")
                         raise NamingError
-                    elif len(name) < 3 or "  " in name:
-                        raise NamingError
-                    elif not self.get_name_entry.get():
-                        raise NamingError
+                if len(name) < 3 or "  " in name:
+                    raise NamingError
                 # If conditions are met, name will be returned
                 self.get_name_label.configure(
                     text="Enjoy the quiz {}".format(name), fg="black")
@@ -120,11 +123,13 @@ class Menu:
     # classes
     def capitals(self):
         user_name = self.name_check()
-        # get_capitals = Capitals(self)  # Opens Capitals GUI
+        if user_name:
+            get_capitals = Capitals(self)  # Opens Capitals GUI
 
     def countries(self):
         user_name = self.name_check()
-        # get_countries = Countries(self)  # Opens Countries GUI
+        if user_name:
+            get_countries = Countries(self)  # Opens Countries GUI
 
     def help(self):
         get_help = Help(self)  # Opens Help GUI
