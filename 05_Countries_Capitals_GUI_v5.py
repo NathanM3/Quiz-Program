@@ -1,6 +1,7 @@
-"""Based on 05_Countries_Capitals_GUI_v3.py
-This is a test version to see if I can merge the 'countries' and 'capitals'
-classes to be one class as a way to save space.
+"""Based on 05_Countries_Capitals_GUI_v4.py
+This is refining the new 'quiz' class that I designed in the previous version.
+This will work on taking in "countries" and "capitals" as the expression in
+replacement of '1' and '2' when pressing the buttons.
 """
 
 # importing modules to use within program
@@ -64,14 +65,15 @@ class Menu:
         self.countries_button = Button(self.buttons_frame, text="Countries",
                                        font="Arial 14 bold", width=10,
                                        bg="blue", fg="snow",
-                                       command=lambda: self.quiz(1))
+                                       command=lambda: self.quiz("Countries"))
         self.countries_button.grid(row=0, column=0, padx=5, pady=10)
 
         # Capitals button (column 1) shows a button to open capitals mode
         self.capitals_button = Button(self.buttons_frame, text="Capitals",
                                       font="Arial 14 bold", width=10,
                                       bg="forest green",
-                                      fg="snow", command=lambda: self.quiz(2))
+                                      fg="snow", command=
+                                      lambda: self.quiz("Capitals"))
         self.capitals_button.grid(row=0, column=1, padx=5, pady=10)
 
         # Separator (row 1) should produce a line inside the buttons frame
@@ -183,10 +185,9 @@ class Quiz:
         #  default settings mean the quiz will be set to capitals
         # More may be added to these as the quiz is developed later on.
         background_color = "chartreuse4"  # default color for capitals
-        heading_text = "Capitals"  # default heading for capitals
-        if mode == 1:
+        heading_text = mode  # since mode is either "Capitals" or "Countries"
+        if mode == "Countries":
             background_color = "DodgerBlue2"  # bg is changed for countries
-            heading_text = "Countries"  # heading is changed for countries
 
         # to disable countries and capitals buttons when quiz is open.
         partner.countries_button.config(state=DISABLED)
