@@ -54,7 +54,7 @@ class Menu:
 
         # Name entry box (row 2)
         self.get_name_entry = Entry(self.main_menu_frame, width=17,
-                                    font="Arial 12")
+                                    font="Arial 12", justify=CENTER)
         self.get_name_entry.grid(row=2)
 
         # Buttons Frame
@@ -228,7 +228,7 @@ class Quiz:
         self.answer_label.grid(row=2, padx=30)
         # Answer entry box (row 3)
         self.get_answer_entry = Entry(self.quiz_frame, width=17,
-                                      font="Arial 12")
+                                      font="Arial 12", justify=CENTER)
         self.get_answer_entry.grid(row=3)
 
         # Buttons Frame (row 4)
