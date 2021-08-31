@@ -211,7 +211,6 @@ class Quiz:
         if mode == "Countries":
             background_color = "DodgerBlue2"  # bg is changed for countries
             dictionary = country_dictionary
-
         keys_list = list(dictionary.keys())
         random.shuffle(keys_list)
         index = 0  # index will increase in value inside while loop
@@ -219,7 +218,6 @@ class Quiz:
         # to disable countries and capitals buttons when quiz is open.
         partner.countries_button.config(state=DISABLED)
         partner.capitals_button.config(state=DISABLED)
-
         # Sets up a child window for the quiz
         self.quiz_box = Toplevel()
 
@@ -272,24 +270,20 @@ class Quiz:
                                    check_button_commands
                                    (dictionary.get(key), dictionary))
         self.check_button.grid(row=0, column=0, padx=5, pady=10)
-
         # 'Next' button will change the GUI to the next question of the quiz
         # (row 0, column 1) on the same horizontal line as check button.
         self.next_button = Button(self.buttons_frame, text="Next",
                                   font="Arial 14 bold", width=8,
-                                  bg="firebrick2", fg="snow", state=DISABLED, command=self.next_command)
+                                  bg="firebrick2", fg="snow", state=DISABLED, command=lambda: self.next_command(index, keys_list, mode, dictionary, key))
         self.next_button.grid(row=0, column=1, padx=5, pady=10)
 
-        if next_question:
+    def next_command(self, index, keys_list, mode, dictionary, key):
+        while index < len(keys_list):
             index += 1
             print(index)
             key = keys_list[index]
             self.question_label.configure(text=f"What is the {mode} of "
                                                f"{dictionary.get(key)}")
-
-    def next_command(self):
-        next_question = True
-        return next_question
 
     def name_check(self):
         valid_char = "[A-Za-z ]"
