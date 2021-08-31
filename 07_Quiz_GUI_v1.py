@@ -183,7 +183,6 @@ class Help:
 
 class Quiz:
     def __init__(self, partner, mode):
-        next_question = False
         #  default settings mean the quiz will be set to capitals
         # Create a dictionary to hold the data
         country_dictionary = {}
@@ -213,8 +212,8 @@ class Quiz:
             dictionary = country_dictionary
         keys_list = list(dictionary.keys())
         random.shuffle(keys_list)
-        index = 0  # index will increase in value inside while loop
-        key = keys_list[index]
+        self.index = 0  # index will increase in value inside while loop
+        key = keys_list[self.index]
         # to disable countries and capitals buttons when quiz is open.
         partner.countries_button.config(state=DISABLED)
         partner.capitals_button.config(state=DISABLED)
@@ -274,16 +273,18 @@ class Quiz:
         # (row 0, column 1) on the same horizontal line as check button.
         self.next_button = Button(self.buttons_frame, text="Next",
                                   font="Arial 14 bold", width=8,
-                                  bg="firebrick2", fg="snow", state=DISABLED, command=lambda: self.next_command(index, keys_list, mode, dictionary, key))
+                                  bg="firebrick2", fg="snow", state=DISABLED,
+                                  command=lambda: self.next_command(keys_list,
+                                                                    mode,
+                                                                    dictionary,
+                                                                    key))
         self.next_button.grid(row=0, column=1, padx=5, pady=10)
 
-    def next_command(self, index, keys_list, mode, dictionary, key):
-        while index < len(keys_list):
-            index += 1
-            print(index)
-            key = keys_list[index]
-            self.question_label.configure(text=f"What is the {mode} of "
-                                               f"{dictionary.get(key)}")
+    def next_command(self, keys_list, mode, dictionary, key):
+        self.index += 1
+        key = keys_list[self.index]
+        self.question_label.configure(text=f"What is the {mode} of "
+                                           f"{dictionary.get(key)}")
 
     def name_check(self):
         valid_char = "[A-Za-z ]"
@@ -339,5 +340,3 @@ if __name__ == "__main__":
     root.title("Geographical Quiz Game")
     something = Menu()
     root.mainloop()
-
-
