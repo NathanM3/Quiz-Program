@@ -1,6 +1,7 @@
 """Based on 08_History_Storage_v1.py
 Creating the history class through a command to the history button.
 Recycling history code from my Temperature Convertor Project
+Note - I finally fixed the mode from being 'countries' to 'country' no plurals
 """
 
 # importing modules to use within program
