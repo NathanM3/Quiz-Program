@@ -1,9 +1,6 @@
-"""Based on 05_Countries_Capitals_GUI_v5.py and 06_dict_test_v3.py
-This is merging the code from 06_dict_test_v3 to _5_Countries_Capitals_GUI_v5
-Added multiple new functions to the Quiz class and reused a function from the
-Menu Class.
-Nathan Morrison
-31/08/2021
+"""Based on 07_Quiz_GUI_v2.py
+Making final changes to the correct and wrong responses to answers.
+4/09/2021
 """
 
 # importing modules to use within program
@@ -186,6 +183,10 @@ class Help:
 
 class Quiz:
     def __init__(self, partner, mode):
+        self.mode = mode
+        # to disable countries and capitals buttons when quiz is open.
+        partner.countries_button.config(state=DISABLED)
+        partner.capitals_button.config(state=DISABLED)
         #  default settings mean the quiz will be set to capitals
         # Create a dictionary to hold the data
         country_dictionary = {}
@@ -203,23 +204,23 @@ class Quiz:
         city_dictionary = {value: key for (key, value) in
                            country_dictionary.items()}
 
-        # Printing both of the dictionaries to help with testing.
-        print(country_dictionary)
-        print(city_dictionary)
         # More may be added to these as the quiz is developed later on.
         background_color = "chartreuse4"  # default color for capitals
         heading_text = mode  # since mode is either "Capitals" or "Countries"
-        dictionary = city_dictionary
+        self.main_dict = city_dictionary  # using self for all the variables
+        # that will be called various times within different functions
         if mode == "Countries":
             background_color = "DodgerBlue2"  # bg is changed for countries
-            dictionary = country_dictionary
-        keys_list = list(dictionary.keys())
-        random.shuffle(keys_list)
+            self.main_dict = country_dictionary
+
+        self.keys_list = list(self.main_dict.keys())  # creates a list of
+        # index numbers for the keys
+        random.shuffle(self.keys_list)  # shuffles the list using random
         self.index = 0  # index will increase in value inside while loop
-        key = keys_list[self.index]
-        # to disable countries and capitals buttons when quiz is open.
-        partner.countries_button.config(state=DISABLED)
-        partner.capitals_button.config(state=DISABLED)
+        self.key = self.keys_list[self.index]  # Key to be used later
+        self.key_value = self.main_dict.get(self.key)  # value to be used with
+        # in check button functions
+
         # Sets up a child window for the quiz
         self.quiz_box = Toplevel()
 
@@ -228,37 +229,37 @@ class Quiz:
         # buttons in the main menu.
         self.quiz_box.protocol('WM_DELETE_WINDOW', partial(self.close_quiz,
                                                            partner))
-        # Quiz GUI
+        # Quiz GUI - Creates frame with dimensions that will hold everything
         self.quiz_frame = Frame(self.quiz_box, width=375, height=300,
                                 bg=background_color)
         self.quiz_frame.grid()
 
-        # Heading (row 0)
+        # Heading (row 0) - Basic heading with 'Capitals' or 'Countries'
         self.quiz_label = Label(self.quiz_frame,
                                 text=heading_text, font="Arial 18 bold",
                                 bg=background_color, padx=10, pady=10)
         self.quiz_label.grid(row=0)
 
-        # Question label (row 1)
+        # Question label (row 1) - Asks question based on mode chosen in menu
         self.question_label = Label(self.quiz_frame,
                                     text=f"What is the {mode} of "
-                                         f"{dictionary.get(key)}",
+                                         f"{self.main_dict.get(self.key)}",
                                     font="Arial 12", wrap=250, pady=10,
                                     bg=background_color)
         self.question_label.grid(row=1)
 
-        # Answer entry box label (row 2)
+        # Answer entry box label (row 2) - Instructions written in small text
         self.answer_label = Label(self.quiz_frame,
                                   text="Type your Answer and press 'Check' "
                                        "to enter", font="Arial 10 italic",
                                   bg=background_color)
         self.answer_label.grid(row=2, padx=30)
-        # Answer entry box (row 3)
+        # Answer entry box (row 3) - Entry box takes answer for city or country
         self.get_answer_entry = Entry(self.quiz_frame, width=17,
                                       font="Arial 12", justify=CENTER)
         self.get_answer_entry.grid(row=3)
 
-        # Buttons Frame (row 4)
+        # Buttons Frame (row 4) - Frame holds 'Check' and 'Next' buttons
         self.buttons_frame = Frame(self.quiz_frame, pady=10, padx=10,
                                    width=200, bg=background_color)
         self.buttons_frame.grid(row=4)
@@ -268,26 +269,15 @@ class Quiz:
         self.check_button = Button(self.buttons_frame, text="Check",
                                    font="Arial 14 bold", width=8,
                                    bg="sandy brown", fg="black",
-                                   command=lambda: self.
-                                   check_button_commands
-                                   (dictionary.get(key), dictionary))
+                                   command=self.check_button_commands)
         self.check_button.grid(row=0, column=0, padx=5, pady=10)
         # 'Next' button will change the GUI to the next question of the quiz
         # (row 0, column 1) on the same horizontal line as check button.
         self.next_button = Button(self.buttons_frame, text="Next",
                                   font="Arial 14 bold", width=8,
                                   bg="firebrick2", fg="snow", state=DISABLED,
-                                  command=lambda: self.next_command(keys_list,
-                                                                    mode,
-                                                                    dictionary,
-                                                                    key))
+                                  command=lambda: self.next_command(mode))
         self.next_button.grid(row=0, column=1, padx=5, pady=10)
-
-    def next_command(self, keys_list, mode, dictionary, key):
-        self.index += 1
-        key = keys_list[self.index]
-        self.question_label.configure(text=f"What is the {mode} of "
-                                           f"{dictionary.get(key)}")
 
     def name_check(self):
         valid_char = "[A-Za-z ]"
@@ -313,28 +303,40 @@ class Quiz:
 
     # This function happens when the check button is pressed
     # It takes in the value and dictionary to be used for location search
-    def check_button_commands(self, value, dictionary):
+    def check_button_commands(self):
         # this function takes in text from entry box and returns a value for
         # the next function
         location_find = self.name_check()
         if location_find:
-            answer = self.location_search(value, location_find, dictionary)
+            # Enabling next button and disabling check button
+            self.check_button.configure(state=DISABLED)
             self.next_button.configure(state=NORMAL)
+            if self.main_dict.get(location_find) == self.key_value:
+                self.question_label.configure(
+                    text=f"{location_find} is the {self.mode} of "
+                         f"{self.key_value}", fg="white")
+            else:
+                self.question_label.configure(
+                    text=f"{location_find} is not the {self.mode} of "
+                         f"{self.key_value}", fg="red")
+
+    def next_command(self, mode):
+        # Resetting buttons and text settings
+        self.check_button.configure(state=NORMAL)
+        self.next_button.configure(state=DISABLED)
+        self.question_label.configure(fg="black")
+        # resetting all of the variables to be used for the next question
+        self.index += 1
+        self.key = self.keys_list[self.index]
+        self.key_value = self.main_dict.get(self.key)
+        self.question_label.configure(text=f"What is the {mode} of "
+                                           f"{self.main_dict.get(self.key)}")
 
     def close_quiz(self, partner):
         # Enabling the help button again in the close help function
         partner.capitals_button.config(state=NORMAL)
         partner.countries_button.config(state=NORMAL)
         self.quiz_box.destroy()
-
-    def location_search(self, value, lookup, location_dict):
-        # outputs the paired location name
-        if location_dict.get(lookup) == value:
-            location_name = value
-        # Returns None for all other cases
-        else:
-            location_name = None
-        return location_name
 
 
 # main routine

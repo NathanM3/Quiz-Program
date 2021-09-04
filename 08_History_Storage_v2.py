@@ -1,9 +1,6 @@
-"""Based on 05_Countries_Capitals_GUI_v5.py and 06_dict_test_v3.py
-This is merging the code from 06_dict_test_v3 to _5_Countries_Capitals_GUI_v5
-Added multiple new functions to the Quiz class and reused a function from the
-Menu Class.
-Nathan Morrison
-31/08/2021
+"""Based on 08_History_Storage_v1.py
+Creating the history class through a command to the history button.
+Recycling history code from my Temperature Convertor Project
 """
 
 # importing modules to use within program
@@ -37,6 +34,9 @@ class Menu:
         # Formatting variables of the GUI
         background_color = "#89B4E5"
 
+        # List to hold history of answers given by user.
+        self.all_answers = []
+
         # Main Menu GUI
         self.main_menu_frame = Frame(width=375, height=300,
                                      bg=background_color)
@@ -69,7 +69,7 @@ class Menu:
         self.countries_button = Button(self.buttons_frame, text="Countries",
                                        font="Arial 14 bold", width=10,
                                        bg="blue", fg="snow",
-                                       command=lambda: self.quiz("Countries"))
+                                       command=lambda: self.quiz("country"))
         self.countries_button.grid(row=0, column=0, padx=5, pady=10)
 
         # Capitals button (column 1) shows a button to open capitals mode
@@ -77,7 +77,7 @@ class Menu:
                                       font="Arial 14 bold", width=10,
                                       bg="forest green",
                                       fg="snow", command=
-                                      lambda: self.quiz("Capitals"))
+                                      lambda: self.quiz("capital"))
         self.capitals_button.grid(row=0, column=1, padx=5, pady=10)
 
         # Separator (row 1) should produce a line inside the buttons frame
@@ -91,7 +91,7 @@ class Menu:
         self.history_button = Button(self.buttons_frame,
                                      text="Answer Record History", wrap=150,
                                      font="Arial 12 bold", bg="light grey",
-                                     width=12)
+                                     width=12, command=lambda: self.history(self.all_answers))
         self.history_button.grid(row=2, column=0, padx=5, pady=10)
 
         # Help Button (row 2, column 1) shows a button to open help window
@@ -131,6 +131,89 @@ class Menu:
 
     def help(self):
         get_help = Help(self)  # Opens Help GUI
+
+    def history(self, answer_list):
+        get_history = History(self, answer_list)
+
+
+class History:
+    def __init__(self, partner, calc_history):
+        background = "SlateGray1"  # A light grey colour with a hint of blue
+
+        # disable history button
+        partner.history_button.config(state=DISABLED)
+
+        # sets up child window (ie: history box)
+        self.history_box = Toplevel()
+
+        # if users press cross at top, closes history and 'releases' history button
+        self.history_box.protocol('WM_DELETE_WINDOW',
+                                  partial(self.close_history,
+                                          partner))
+        # set up GUI Frame
+        self.history_frame = Frame(self.history_box, width=300, bg=background)
+        self.history_frame.grid()
+
+        # set up history heading (row 0)
+        self.how_heading = Label(self.history_frame,
+                                 text="Calculation History",
+                                 font="Arial 19 bold", bg=background, pady=10)
+        self.how_heading.grid(row=0)
+
+        # history text (label, row 1)
+        self.history_text = Label(self.history_frame,
+                                  text="Here are your most recent "
+                                       "calculations. Please use the export "
+                                       "button to create a text file of all "
+                                       "your calculations for this session",
+                                  font="arial 10 italic",
+                                  justify=LEFT,
+                                  padx=10, pady=10,
+                                  bg=background, fg="maroon",
+                                  wrap=250)
+        self.history_text.grid(row=1)
+
+        # History Output goes here... (row 2)
+        history_string = ""
+        if len(calc_history) >= 7:
+            for item in range(0, 7):
+                history_string += calc_history[len(calc_history)-item-1] + "\n"
+
+        else:
+            for item in calc_history:
+                history_string += calc_history[len(calc_history) -
+                                               calc_history.index(item)-1] \
+                                  + "\n"
+                self.history_text.config(text="Here is your calculation "
+                                              "history. You can use the "
+                                              "export button to save this "
+                                              "data to a text file if "
+                                              "desired.")
+
+        # Label to display calculation history to user
+        self.calc_label = Label(self.history_frame, text=history_string,
+                                bg=background, font="Arial 12", justify=LEFT)
+        self.calc_label.grid(row=2)
+        # Export / Dismiss buttons frame (row 3)
+        self.export_dismiss_frame = Frame(self.history_frame)
+        self.export_dismiss_frame.grid(row=3, pady=10)
+
+        # Export Button
+        self.export_button = Button(self.export_dismiss_frame, text="Export",
+                                    font="arial 12 bold")
+        self.export_button.grid(row=0, column=0)
+
+        # Dismiss Button
+        self.dismiss_button = Button(self.export_dismiss_frame, text="Dismiss",
+                                     font="Arial 12 bold",
+                                     command=partial(self.close_history,
+                                                     partner))
+        self.dismiss_button.grid(row=0, column=1)
+
+    def close_history(self, partner):
+        # Put history button back to normal...
+        partner.history_button.config(state=NORMAL)
+        self.history_box.destroy()
 
 
 class Help:
@@ -186,6 +269,10 @@ class Help:
 
 class Quiz:
     def __init__(self, partner, mode):
+        self.mode = mode
+        # to disable countries and capitals buttons when quiz is open.
+        partner.countries_button.config(state=DISABLED)
+        partner.capitals_button.config(state=DISABLED)
         #  default settings mean the quiz will be set to capitals
         # Create a dictionary to hold the data
         country_dictionary = {}
@@ -203,23 +290,23 @@ class Quiz:
         city_dictionary = {value: key for (key, value) in
                            country_dictionary.items()}
 
-        # Printing both of the dictionaries to help with testing.
-        print(country_dictionary)
-        print(city_dictionary)
         # More may be added to these as the quiz is developed later on.
         background_color = "chartreuse4"  # default color for capitals
         heading_text = mode  # since mode is either "Capitals" or "Countries"
-        dictionary = city_dictionary
+        self.main_dict = city_dictionary  # using self for all the variables
+        # that will be called various times within different functions
         if mode == "Countries":
             background_color = "DodgerBlue2"  # bg is changed for countries
-            dictionary = country_dictionary
-        keys_list = list(dictionary.keys())
-        random.shuffle(keys_list)
+            self.main_dict = country_dictionary
+
+        self.keys_list = list(self.main_dict.keys())  # creates a list of
+        # index numbers for the keys
+        random.shuffle(self.keys_list)  # shuffles the list using random
         self.index = 0  # index will increase in value inside while loop
-        key = keys_list[self.index]
-        # to disable countries and capitals buttons when quiz is open.
-        partner.countries_button.config(state=DISABLED)
-        partner.capitals_button.config(state=DISABLED)
+        self.key = self.keys_list[self.index]  # Key to be used later
+        self.key_value = self.main_dict.get(self.key)  # value to be used with
+        # in check button functions
+
         # Sets up a child window for the quiz
         self.quiz_box = Toplevel()
 
@@ -228,37 +315,37 @@ class Quiz:
         # buttons in the main menu.
         self.quiz_box.protocol('WM_DELETE_WINDOW', partial(self.close_quiz,
                                                            partner))
-        # Quiz GUI
+        # Quiz GUI - Creates frame with dimensions that will hold everything
         self.quiz_frame = Frame(self.quiz_box, width=375, height=300,
                                 bg=background_color)
         self.quiz_frame.grid()
 
-        # Heading (row 0)
+        # Heading (row 0) - Basic heading with 'Capitals' or 'Countries'
         self.quiz_label = Label(self.quiz_frame,
                                 text=heading_text, font="Arial 18 bold",
                                 bg=background_color, padx=10, pady=10)
         self.quiz_label.grid(row=0)
 
-        # Question label (row 1)
+        # Question label (row 1) - Asks question based on mode chosen in menu
         self.question_label = Label(self.quiz_frame,
                                     text=f"What is the {mode} of "
-                                         f"{dictionary.get(key)}",
+                                         f"{self.main_dict.get(self.key)}",
                                     font="Arial 12", wrap=250, pady=10,
                                     bg=background_color)
         self.question_label.grid(row=1)
 
-        # Answer entry box label (row 2)
+        # Answer entry box label (row 2) - Instructions written in small text
         self.answer_label = Label(self.quiz_frame,
                                   text="Type your Answer and press 'Check' "
                                        "to enter", font="Arial 10 italic",
                                   bg=background_color)
         self.answer_label.grid(row=2, padx=30)
-        # Answer entry box (row 3)
+        # Answer entry box (row 3) - Entry box takes answer for city or country
         self.get_answer_entry = Entry(self.quiz_frame, width=17,
                                       font="Arial 12", justify=CENTER)
         self.get_answer_entry.grid(row=3)
 
-        # Buttons Frame (row 4)
+        # Buttons Frame (row 4) - Frame holds 'Check' and 'Next' buttons
         self.buttons_frame = Frame(self.quiz_frame, pady=10, padx=10,
                                    width=200, bg=background_color)
         self.buttons_frame.grid(row=4)
@@ -268,26 +355,16 @@ class Quiz:
         self.check_button = Button(self.buttons_frame, text="Check",
                                    font="Arial 14 bold", width=8,
                                    bg="sandy brown", fg="black",
-                                   command=lambda: self.
-                                   check_button_commands
-                                   (dictionary.get(key), dictionary))
+                                   command=lambda: self.check_button_commands
+                                   (partner))
         self.check_button.grid(row=0, column=0, padx=5, pady=10)
         # 'Next' button will change the GUI to the next question of the quiz
         # (row 0, column 1) on the same horizontal line as check button.
         self.next_button = Button(self.buttons_frame, text="Next",
                                   font="Arial 14 bold", width=8,
                                   bg="firebrick2", fg="snow", state=DISABLED,
-                                  command=lambda: self.next_command(keys_list,
-                                                                    mode,
-                                                                    dictionary,
-                                                                    key))
+                                  command=lambda: self.next_command(mode))
         self.next_button.grid(row=0, column=1, padx=5, pady=10)
-
-    def next_command(self, keys_list, mode, dictionary, key):
-        self.index += 1
-        key = keys_list[self.index]
-        self.question_label.configure(text=f"What is the {mode} of "
-                                           f"{dictionary.get(key)}")
 
     def name_check(self):
         valid_char = "[A-Za-z ]"
@@ -313,28 +390,44 @@ class Quiz:
 
     # This function happens when the check button is pressed
     # It takes in the value and dictionary to be used for location search
-    def check_button_commands(self, value, dictionary):
+    def check_button_commands(self, partner):
         # this function takes in text from entry box and returns a value for
         # the next function
         location_find = self.name_check()
         if location_find:
-            answer = self.location_search(value, location_find, dictionary)
+            # Enabling next button and disabling check button
+            self.check_button.configure(state=DISABLED)
             self.next_button.configure(state=NORMAL)
+            if self.main_dict.get(location_find) == self.key_value:
+                answer = f"'{location_find}' is the " \
+                         f"{self.mode} of {self.key_value}"
+                self.question_label.configure(
+                    text=answer, fg="white")
+            else:
+                answer = f"'{location_find}' is not the " \
+                         f"{self.mode} of {self.key_value}"
+                self.question_label.configure(
+                    text=answer, fg="red")
+            # Adding data to list in the main menu
+            partner.all_answers.append(answer)
+
+    def next_command(self, mode):
+        # Resetting buttons and text settings
+        self.check_button.configure(state=NORMAL)
+        self.next_button.configure(state=DISABLED)
+        self.question_label.configure(fg="black")
+        # resetting all of the variables to be used for the next question
+        self.index += 1
+        self.key = self.keys_list[self.index]
+        self.key_value = self.main_dict.get(self.key)
+        self.question_label.configure(text=f"What is the {mode} of "
+                                           f"{self.main_dict.get(self.key)}")
 
     def close_quiz(self, partner):
         # Enabling the help button again in the close help function
         partner.capitals_button.config(state=NORMAL)
         partner.countries_button.config(state=NORMAL)
         self.quiz_box.destroy()
-
-    def location_search(self, value, lookup, location_dict):
-        # outputs the paired location name
-        if location_dict.get(lookup) == value:
-            location_name = value
-        # Returns None for all other cases
-        else:
-            location_name = None
-        return location_name
 
 
 # main routine
