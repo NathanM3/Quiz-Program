@@ -1,0 +1,12 @@
+Louise
+'England' is the country of London
+'Jordan' is the country of Amman
+'Scotland' is the country of Edinburgh
+'Belgium' is not the country of Luxembourg
+'Sweden' is the country of Stockholm
+'India' is the country of New Delhi
+'Nepal' is the country of Kathmandu
+'Guatemala' is the country of Guatemala City
+'Cambodia' is the country of Phnom Penh
+'France' is not the country of Roseau
+'Palestine' is not the country of Belgrade
