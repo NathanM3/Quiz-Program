@@ -1,4 +1,5 @@
 """Final version that meets functions as expected.
+Last change made was resetting self.index to 0 when all the questions are done
 Nathan Morrison
 8/09/2021
 """
@@ -573,6 +574,10 @@ class Quiz:
         self.get_answer_entry.delete(0, END)
         # resetting all of the variables to be used for the next question
         self.index += 1
+        # This means that it will go to the start of the quiz once finished.
+        if self.index == len(self.keys_list):
+            self.index = 0
+        print(self.index)
         self.key = self.keys_list[self.index]
         self.key_value = self.main_dict.get(self.key)
         self.question_label.configure(
