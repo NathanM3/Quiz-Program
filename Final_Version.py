@@ -577,7 +577,6 @@ class Quiz:
         # This means that it will go to the start of the quiz once finished.
         if self.index == len(self.keys_list):
             self.index = 0
-        print(self.index)
         self.key = self.keys_list[self.index]
         self.key_value = self.main_dict.get(self.key)
         self.question_label.configure(
